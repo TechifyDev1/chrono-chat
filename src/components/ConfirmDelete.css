@@ -1,0 +1,16 @@
+.modal-something {
+    background-color: #0a0f2373;
+    color: rgb(160, 160, 160);
+}
+
+/* ConfirmDelete.css */
+.modal-something .btn-close {
+    color: rgb(160, 160, 160);
+    opacity: 1;
+    /* Ensure visibility if default opacity is applied */
+}
+
+.modal-something .btn-close:hover {
+    color: rgb(200, 200, 200);
+    /* Optional: Adjust hover color */
+}

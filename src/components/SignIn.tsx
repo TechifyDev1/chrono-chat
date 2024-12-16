@@ -1,7 +1,9 @@
-import { CSSProperties } from "react";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { ChangeEvent, CSSProperties } from "react";
 import { Button, Card, Form } from "react-bootstrap";
 import { FcGoogle } from "react-icons/fc"; // Import Google Icon from React Icons
 import { Link } from "react-router-dom";
+import { auth } from "./firebase-config";
 
 const SignIn = () => {
     const styles: { [key: string]: CSSProperties } = {
@@ -70,17 +72,31 @@ const SignIn = () => {
             backgroundColor: 'rgb(160, 160, 160)'
         }
     };
-
+    const handleSignIn = async (e: ChangeEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const email = formData.get("email") as string
+        const password = formData.get("password") as string
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            console.log('Log in successfull');
+        } catch (error: any) {
+            console.log(error.code);
+            console.log(error.message);
+            console.log(error);
+        }
+    }
     return (
         <div style={styles.container}>
             <Card style={styles.card}>
                 <img src="/logIn.png" alt="" style={{ width: '50%', objectFit: 'cover' }} />
                 <Card.Body>
                     <h2 style={styles.title}>SignIn to ChronoChat</h2>
-                    <Form>
+                    <Form onSubmit={handleSignIn}>
                         <Form.Group>
                             <Form.Label style={styles.label}>Email</Form.Label>
                             <Form.Control
+                                name="email"
                                 placeholder="Enter your email"
                                 type="email"
                                 style={styles.input}
@@ -89,22 +105,16 @@ const SignIn = () => {
                         <Form.Group>
                             <Form.Label style={styles.label}>Password</Form.Label>
                             <Form.Control
+                                name="password"
                                 style={styles.input}
                                 placeholder="Enter your password"
                                 type="password"
                             />
                         </Form.Group>
                         <Button
+                            type="submit"
                             style={styles.button}
                             className=""
-                            onMouseOver={(e: React.MouseEvent<HTMLButtonElement>) => {
-                                e.currentTarget.style.backgroundColor =
-                                    styles.buttonHover.backgroundColor!;
-                            }}
-                            onMouseOut={(e: React.MouseEvent<HTMLButtonElement>) => {
-                                e.currentTarget.style.backgroundColor =
-                                    styles.button.backgroundColor!;
-                            }}
                         >
                             Sign In
                         </Button>

@@ -1,7 +1,10 @@
-import React, { CSSProperties } from "react";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
+import React, { ChangeEvent, CSSProperties } from "react";
 import { Button, Card, Form } from "react-bootstrap";
 import { FcGoogle } from "react-icons/fc"; // Import Google Icon
 import { Link } from "react-router-dom";
+import { auth, db } from "./firebase-config";
 
 const SignUpComponent: React.FC = () => {
     const styles: { [key: string]: CSSProperties } = {
@@ -70,17 +73,42 @@ const SignUpComponent: React.FC = () => {
             backgroundColor: 'rgb(160, 160, 160)'
         }
     };
+    const handleSignUp = async (e: ChangeEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const name = formData.get("name") as string;
+        const email = formData.get("email") as string;
+        const password = formData.get("password") as string;
 
+        try {
+            const { user } = await createUserWithEmailAndPassword(auth, email, password);
+            const userId = user.uid;
+            const userData = {
+                userId,
+                name,
+                email
+            }
+            const userRef = doc(db, 'users', userId);
+            const userChatRef = doc(db, 'userchats', userId);
+            await setDoc(userChatRef, {})
+            await setDoc(userRef, userData);
+            console.log("Success in logging in")
+        } catch (error: any) {
+            console.log(error);
+            console.log(error.message);
+        }
+    }
     return (
         <div style={styles.container}>
             <Card style={styles.card}>
                 <img src="/user.png" alt="" style={{ width: '50%', objectFit: 'cover' }} />
                 <Card.Body style={{ width: '30%' }}>
                     <h2 style={styles.title}>SignUp to ChronoChat</h2>
-                    <Form>
+                    <Form onSubmit={handleSignUp}>
                         <Form.Group controlId="formBasicUsername" className="mb-3">
                             <Form.Label style={styles.label}>Username</Form.Label>
                             <Form.Control
+                                name="name"
                                 type="text"
                                 placeholder="Enter your username"
                                 style={styles.input}
@@ -90,6 +118,7 @@ const SignUpComponent: React.FC = () => {
                         <Form.Group controlId="formBasicEmail" className="mb-3">
                             <Form.Label style={styles.label}>Email</Form.Label>
                             <Form.Control
+                                name="email"
                                 type="email"
                                 placeholder="Enter email"
                                 style={styles.input}
@@ -99,6 +128,7 @@ const SignUpComponent: React.FC = () => {
                         <Form.Group controlId="formBasicPassword" className="mb-3">
                             <Form.Label style={styles.label}>Password</Form.Label>
                             <Form.Control
+                                name="password"
                                 type="password"
                                 placeholder="Enter your password"
                                 style={styles.input}
@@ -107,19 +137,8 @@ const SignUpComponent: React.FC = () => {
 
 
                         <Button
+                            type="submit"
                             style={styles.button}
-                            onMouseOver={(e: React.MouseEvent<HTMLButtonElement>) => {
-                                if (styles.buttonHover.backgroundColor) {
-                                    e.currentTarget.style.backgroundColor =
-                                        styles.buttonHover.backgroundColor;
-                                }
-                            }}
-                            onMouseOut={(e: React.MouseEvent<HTMLButtonElement>) => {
-                                if (styles.button.backgroundColor) {
-                                    e.currentTarget.style.backgroundColor =
-                                        styles.button.backgroundColor;
-                                }
-                            }}
                         >
                             Sign up
                         </Button>
