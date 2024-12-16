@@ -1,0 +1,29 @@
+.side-bar {
+    width: 25%;
+    padding: 5px;
+    height: 100vh;
+    background-color: #0a0f23;
+    border-right-color: rgb(160, 160, 160);
+    border-right: 1px solid;
+}
+
+.title-container {
+    background-color: #141a31;
+    cursor: pointer;
+    color: rgb(160, 160, 160);
+}
+
+.close-side-bar,
+.new-chat-icon {
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.5rem;
+    border: none;
+    background-color: rgb(68, 56, 208);
+}
+
+.option-btn {
+    background: none;
+}

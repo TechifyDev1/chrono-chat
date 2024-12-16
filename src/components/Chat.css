@@ -1,0 +1,23 @@
+.chat-container {
+    width: 100%;
+    height: 80%;
+    overflow: auto;
+    scrollbar-width: none;
+}
+
+.ai-response {
+    width: 100%;
+}
+
+.human-response {
+    width: 50%;
+
+    background-color: rgb(68, 56, 208);
+}
+
+.copy-btn {
+    border: none;
+    background: none;
+    outline: none;
+    color: rgb(160, 160, 160);
+}

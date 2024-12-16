@@ -4,7 +4,7 @@ import { FaPaperclip, FaPaperPlane } from "react-icons/fa";
 const MessageInput = () => {
 
     return (
-        <Container className="p-3 shadow position-fixed bottom-0 start-0 end-0 mb-3" style={{ maxWidth: '800px', borderRadius: '50px', backgroundColor: 'rgb(31, 38, 66)' }}>
+        <Container className="p-3 shadow position-absolute bottom-0 start-0 end-0 mb-3" style={{ maxWidth: '800px', borderRadius: '50px', backgroundColor: 'rgb(31, 38, 66)' }}>
             <Row>
                 <Col>
                     <InputGroup className="d-flex justify-content-between">
