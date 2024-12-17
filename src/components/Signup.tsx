@@ -90,7 +90,7 @@ const SignUpComponent: React.FC = () => {
             }
             const userRef = doc(db, 'users', userId);
             const userChatRef = doc(db, 'userchats', userId);
-            await setDoc(userChatRef, {})
+            await setDoc(userChatRef, {});
             await setDoc(userRef, userData);
             console.log("Success in logging in")
         } catch (error: any) {

@@ -1,9 +1,9 @@
+import Chat from "./Chat";
 import MessageInput from "./MessageInput";
 import NavBar from "./NavBar";
-import NoMessage from "./NoMessage";
 import SideBar from "./SideBar";
 
-const ChatPage = () => {
+const Conversation = () => {
     return (
         <>
             <SideBar />
@@ -11,7 +11,10 @@ const ChatPage = () => {
                 <NavBar />
 
                 <div className="chat-container container p-3">
-                    <NoMessage />
+                    <Chat />
+                    <Chat />
+                    <Chat />
+                    <Chat />
                 </div>
 
                 <MessageInput />
@@ -20,4 +23,4 @@ const ChatPage = () => {
     )
 }
 
-export default ChatPage;
+export default Conversation;
