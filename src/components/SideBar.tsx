@@ -25,9 +25,8 @@ const SideBar: React.FC = () => {
             if (docSnap.exists()) {
                 const data = docSnap.data();
 
-                // Map and filter Firestore data to include only non-null chats
                 const chatTitles = Object.entries(data)
-                    .filter(([_, value]) => value !== null) // Exclude null values
+                    .filter(([_, value]) => value !== null)
                     .map(([id, value]) => {
                         const title = Array.isArray(value) ? value[0] : "Untitled Chat";
                         return { id, title };
@@ -36,11 +35,10 @@ const SideBar: React.FC = () => {
                 setTitles(chatTitles);
             } else {
                 console.log("No chat titles found.");
-                setTitles([]); // Clear titles if no data exists
+                setTitles([]);
             }
         });
 
-        // Cleanup listener when the component unmounts
         return () => unsubscribe();
     }, []);
 

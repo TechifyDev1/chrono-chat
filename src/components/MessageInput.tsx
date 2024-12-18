@@ -2,6 +2,7 @@ import { doc, updateDoc } from "firebase/firestore";
 import { useState } from "react";
 import { Button, Col, Container, Form, InputGroup, Row } from "react-bootstrap";
 import { FaPaperclip, FaPaperPlane } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import { auth, db } from "./firebase-config";
 import { generateResponse, generateTitle } from "./handle-prompt";
 
@@ -10,6 +11,7 @@ const MessageInput = () => {
     const [aiChat, setAiChat] = useState<any>();
     const [message, setMessage] = useState<string>('');
     const [chatTitle, setChatTitle] = useState<any>();
+    const navigate = useNavigate();
     const handleMessage = async () => {
         try {
             const userId = auth.currentUser?.uid;
@@ -22,17 +24,20 @@ const MessageInput = () => {
             const userMes = {
                 role: "user",
                 parts: [{ text: message }],
+                id: `c_${Date.now()}`,
             }
             const aiMes = {
                 role: "model",
                 parts: [{ text: aiChat }],
+                id: `c_${Date.now()}`,
             }
-            const userChatRef = doc(db, 'userchats', userId); // Create document reference
+            const userChatRef = doc(db, 'userchats', userId);
 
             await updateDoc(userChatRef, {
-                [newId]: [title, userMes, aiMes] // Use newId as key for the new chat entry
+                [newId]: [title, userMes, aiMes]
             });
             setConversationId(newId);
+            navigate(`/conversation/${conversationId}`);
         } catch (e: any) {
             console.log(e);
         }

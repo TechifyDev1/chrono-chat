@@ -19,7 +19,7 @@ const App = () => {
         <Route path="/" element={userLoggedIn ? (<ChatPage />) : (<SignUp />)}></Route>
         <Route path="/signup" element={userLoggedIn ? (<Navigate to='/' />) : (<SignUp />)}></Route>
         <Route path="/signin" element={userLoggedIn ? (<Navigate to='/' />) : (<SignIn />)}></Route>
-        <Route path="/conversation/:id?" element={userLoggedIn ?? (<Conversation />)}></Route>
+        <Route path="/conversation/:id?" element={userLoggedIn ? (<Conversation />) : (<SignUp />)}></Route>
       </Routes>
     </BrowserRouter>
   )
