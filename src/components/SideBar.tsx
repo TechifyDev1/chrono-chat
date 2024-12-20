@@ -2,6 +2,7 @@ import { doc, onSnapshot } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { FaPlus } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import ChatTitle from "./ChatTitles";
 import { auth, db } from "./firebase-config";
 import "./SideBar.css";
@@ -11,8 +12,14 @@ interface Chat {
     title: string;
 }
 
-const SideBar: React.FC = () => {
+interface ChildProps {
+    onButtonClick: () => void;
+    navState?: boolean;
+}
+
+const SideBar: React.FC<ChildProps> = ({ onButtonClick, navState }) => {
     const [titles, setTitles] = useState<Chat[]>([]);
+    const navigate = useNavigate()
 
     useEffect(() => {
         const userId = auth.currentUser?.uid;
@@ -41,8 +48,9 @@ const SideBar: React.FC = () => {
 
         return () => unsubscribe();
     }, []);
-
-    // Function to refresh the titles (manually trigger onDelete if needed)
+    const handleNewChat = () => {
+        navigate('/');
+    }
     const refreshTitles = () => {
         const userId = auth.currentUser?.uid;
         if (!userId) return;
@@ -69,13 +77,13 @@ const SideBar: React.FC = () => {
     };
 
     return (
-        <nav className="side-bar position-fixed left-0 top-0 d-flex flex-column px-3">
+        <nav className="side-bar position-fixed left-0 top-0 d-flex flex-column px-3" style={{ transform: navState ? 'translateX(0)' : 'translateX(-100)' }}>
             <div className="d-flex justify-content-between align-items-center p-2 mb-4">
-                <button className="close-side-bar">
+                <button className="close-side-bar" onClick={onButtonClick}>
                     <AiOutlineClose style={{ color: "rgb(160, 160, 160)" }} />
                 </button>
                 <h2 className="brand fw-normal text-white">Chrono</h2>
-                <button className="new-chat-icon">
+                <button className="new-chat-icon" onClick={() => handleNewChat()}>
                     <FaPlus style={{ color: "rgb(160, 160, 160)" }} />
                 </button>
             </div>
@@ -85,7 +93,7 @@ const SideBar: React.FC = () => {
                         key={chat.id}
                         id={chat.id}
                         title={chat.title}
-                        onDelete={refreshTitles} // Pass refreshTitles to ChatTitle
+                        onDelete={refreshTitles}
                     />
                 ))
             ) : (

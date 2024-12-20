@@ -12,6 +12,7 @@ const Conversation = () => {
     const { id } = useParams();
     const userId = auth.currentUser?.uid;
     const [conv, setConv] = useState<any[]>([]); // To store chat history
+    const [isSideBarVisible, setIsSideBarVisible] = useState(false);
 
     useEffect(() => {
         if (!id || !userId) {
@@ -30,6 +31,7 @@ const Conversation = () => {
 
             const data = docSnap.data();
             const currentChatMessages = data?.[id];
+            document.title = currentChatMessages[0];
 
             if (!currentChatMessages) {
                 console.error("Chat not found or no messages for this ID.");
@@ -48,11 +50,13 @@ const Conversation = () => {
     }, [userId, id, navigate]);
 
     if (!id || !userId) return <div>Loading...</div>;
-
+    const handleToggleNav = () => {
+        setIsSideBarVisible(prevState => !prevState);
+    }
     return (
         <>
-            <SideBar />
-            <div style={{ width: '75%', height: '100vh', backgroundColor: "#0a0f23", color: "rgb(160, 160, 160)", position: 'fixed', right: '0' }}>
+            <SideBar onButtonClick={handleToggleNav} />
+            <div style={{ width: isSideBarVisible ? '75%' : '100%', height: '100vh', backgroundColor: "#0a0f23", color: "rgb(160, 160, 160)", position: 'fixed', right: '0' }}>
                 <NavBar />
                 <div className="chat-container container p-3">
                     {conv.map((message, index) => {

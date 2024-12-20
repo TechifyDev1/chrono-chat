@@ -6,7 +6,7 @@ import { auth, db } from "./firebase-config";
 import { generateResponse } from "./handle-prompt";
 
 const ContinueChatInp = ({ chatId }: { chatId: string }) => {
-    const [aiChat, setAiChat] = useState<any>('');
+    const [aiChat, setAiChat] = useState<string>('');
     const [message, setMessage] = useState<string>('');
     const [chatTitle, setChatTitle] = useState<string>('');
     const userId = auth.currentUser?.uid;
@@ -18,49 +18,68 @@ const ContinueChatInp = ({ chatId }: { chatId: string }) => {
                 return;
             }
 
-            // Generate AI Response
-            const aiRes = await generateResponse(message);
-            setAiChat(aiRes);
-
-            const userMes = {
-                role: "user",
-                parts: [{ text: message }],
-            };
-            const aiMes = {
-                role: "model",
-                parts: [{ text: aiRes }], // Use aiRes instead of aiChat
-            };
-
-            // Fetch Existing Chat Data
             const userChatRef = doc(db, "userchats", userId);
-            const allChat = await getDoc(userChatRef);
-            const currentChat = allChat.data()?.[chatId];
+            const chatSnapshot = await getDoc(userChatRef);
+            const currentChat = chatSnapshot.data()?.[chatId];
 
-            if (currentChat && currentChat.length > 0) {
-                setChatTitle(currentChat[0]); // Assume first item is the title
-            } else {
-                console.error("No chat found for the given chatId.");
+            if (!currentChat || currentChat.length < 1) {
+                console.error("Invalid chat data or empty chat history.");
                 return;
             }
 
-            const history = currentChat.slice(1); // Exclude title if necessary
-            const aiHistory = history.map((item: any) => ({ ...item }));
+            const chatTitle = currentChat[0];
+            setChatTitle(chatTitle);
+            const history = currentChat.slice(1);
 
-            // Uncomment for Firestore Updates
+            document.title = chatTitle;
+
+            const aiHistory = history.map((item: any) => ({
+                role: item.role,
+                parts: item.parts || [],
+            }));
+
+            const aiRes = await generateResponse(message, aiHistory);
+            if (!aiRes) {
+                console.error("Failed to generate AI response.");
+                return;
+            }
+
+            setAiChat(aiRes);
+
+            const userMessage = {
+                role: "user",
+                parts: [{ text: message }],
+                id: `m_${Date.now()}`,
+            };
+            const aiMessage = {
+                role: "model",
+                parts: [{ text: aiRes }],
+                id: `m_${Date.now() + 1}`,
+            };
+
             await updateDoc(userChatRef, {
-                [chatId]: [chatTitle, userMes, aiMes, ...aiHistory],
+                [chatId]: [chatTitle, ...history, userMessage, aiMessage],
             });
-        } catch (e) {
-            console.error("Error in handleMessage:", e);
+            setMessage('');
+        } catch (error) {
+            console.error("Error in handleMessage:", error);
         }
     };
 
+
     return (
-        <Container className="p-3 shadow position-absolute bottom-0 start-0 end-0 mb-3" style={{ maxWidth: '800px', borderRadius: '50px', backgroundColor: 'rgb(31, 38, 66)' }}>
+        <Container
+            className="p-3 shadow position-absolute bottom-0 start-0 end-0 mb-3"
+            style={{ maxWidth: '800px', borderRadius: '50px', backgroundColor: 'rgb(31, 38, 66)' }}
+        >
             <Row>
                 <Col>
                     <InputGroup className="d-flex justify-content-between">
-                        <Button variant="outline-secondary" className="d-flex align-items-center" style={{ borderRadius: '50%', border: 'none', background: 'none' }}>
+                        <Button
+                            variant="outline-secondary"
+                            className="d-flex align-items-center"
+                            style={{ borderRadius: '50%', border: 'none', background: 'none' }}
+                        >
                             <FaPaperclip size={30} />
                         </Button>
                         <Form.Control
@@ -77,7 +96,12 @@ const ContinueChatInp = ({ chatId }: { chatId: string }) => {
                                 color: 'rgb(160, 160, 160)',
                             }}
                         />
-                        <Button onClick={handleMessage} variant="primary" className="d-flex align-items-center" style={{ borderRadius: '50%', border: 'none', background: 'none' }}>
+                        <Button
+                            onClick={handleMessage}
+                            variant="primary"
+                            className="d-flex align-items-center"
+                            style={{ borderRadius: '50%', border: 'none', background: 'none' }}
+                        >
                             <FaPaperPlane size={30} color="rgb(160, 160, 160)" />
                         </Button>
                     </InputGroup>
