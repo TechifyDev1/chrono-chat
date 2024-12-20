@@ -119,6 +119,7 @@ const SignUpComponent: React.FC = () => {
                                 type="text"
                                 placeholder="Enter your username"
                                 style={styles.input}
+                                required
                             />
                         </Form.Group>
 
@@ -129,6 +130,7 @@ const SignUpComponent: React.FC = () => {
                                 type="email"
                                 placeholder="Enter email"
                                 style={styles.input}
+                                required
                             />
                         </Form.Group>
 
@@ -139,6 +141,7 @@ const SignUpComponent: React.FC = () => {
                                 type="password"
                                 placeholder="Enter your password"
                                 style={styles.input}
+                                required
                             />
                         </Form.Group>
 
