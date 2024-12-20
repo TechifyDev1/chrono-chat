@@ -36,7 +36,8 @@ const SignUpComponent: React.FC = () => {
             width: '90%',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            marginLeft: '2rem',
         },
         googleButton: {
             backgroundColor: "rgb(160, 160, 160)", // White background
@@ -146,7 +147,7 @@ const SignUpComponent: React.FC = () => {
                         </Form.Group>
 
                         {/* Button with spinner */}
-                        <Button type="submit" style={styles.button} disabled={loading} className="ml-3"}>
+                        <Button type="submit" style={styles.button} disabled={loading}}>
                             {loading ? <Spinner animation="border" variant="light" size="sm" /> : "Sign up"}
                         </Button>
 
