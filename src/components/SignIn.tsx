@@ -36,6 +36,7 @@ const SignIn = () => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
+            marginLeft: '1.5rem',
         },
         googleButton: {
             backgroundColor: "rgb(160, 160, 160)", // White background
