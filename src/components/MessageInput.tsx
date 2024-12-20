@@ -7,11 +7,12 @@ import { auth, db } from "./firebase-config";
 import { generateResponse, generateTitle } from "./handle-prompt";
 
 const MessageInput = () => {
-    const [aiChat, setAiChat] = useState<string>('');
-    const [message, setMessage] = useState<string>('');
+    const [message, setMessage] = useState<string>("");
     const navigate = useNavigate();
 
     const handleMessage = async () => {
+        if (message.trim() === "") return; // Prevent sending if the input is empty
+
         try {
             const userId = auth.currentUser?.uid;
             if (!userId) return;
@@ -21,7 +22,6 @@ const MessageInput = () => {
             const aiRes = await generateResponse(message);
             const title = await generateTitle(aiRes);
 
-            // Structure the messages
             const userMes = {
                 role: "user",
                 parts: [{ text: message }],
@@ -32,22 +32,33 @@ const MessageInput = () => {
             };
 
             // Update Firestore with the new conversation
-            const userChatRef = doc(db, 'userchats', userId);
+            const userChatRef = doc(db, "userchats", userId);
             await updateDoc(userChatRef, {
                 [newId]: [title, userMes, aiMes],
             });
 
-            // Navigate directly to the new conversation
             navigate(`/conversation/${newId}`);
+
+            setMessage("");
         } catch (e: any) {
             console.error("Error handling message:", e);
+        }
+    };
+
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === "Enter") {
+            handleMessage();
         }
     };
 
     return (
         <Container
             className="p-3 shadow position-absolute bottom-0 start-0 end-0 mb-3"
-            style={{ maxWidth: '800px', borderRadius: '50px', backgroundColor: 'rgb(31, 38, 66)' }}
+            style={{
+                maxWidth: "800px",
+                borderRadius: "50px",
+                backgroundColor: "rgb(31, 38, 66)",
+            }}
         >
             <Row>
                 <Col>
@@ -55,7 +66,7 @@ const MessageInput = () => {
                         <Button
                             variant="outline-secondary"
                             className="d-flex align-items-center"
-                            style={{ borderRadius: '50%', border: 'none', background: 'none' }}
+                            style={{ borderRadius: "50%", border: "none", background: "none" }}
                         >
                             <FaPaperclip size={30} />
                         </Button>
@@ -63,21 +74,22 @@ const MessageInput = () => {
                             type="text"
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
+                            onKeyDown={handleKeyDown} // Trigger message sending on Enter
                             className="custom-input"
                             placeholder="Send a message..."
                             style={{
-                                borderRadius: '15px',
-                                background: 'none',
-                                border: 'none',
-                                outline: 'none',
-                                color: 'rgb(160, 160, 160)',
+                                borderRadius: "15px",
+                                background: "none",
+                                border: "none",
+                                outline: "none",
+                                color: "rgb(160, 160, 160)",
                             }}
                         />
                         <Button
                             onClick={handleMessage}
                             variant="primary"
                             className="d-flex align-items-center"
-                            style={{ borderRadius: '50%', border: 'none', background: 'none' }}
+                            style={{ borderRadius: "50%", border: "none", background: "none" }}
                         >
                             <FaPaperPlane size={30} color="rgb(160, 160, 160)" />
                         </Button>
@@ -86,11 +98,11 @@ const MessageInput = () => {
             </Row>
             <style>
                 {`
-                .custom-input::placeholder {
-                    color: rgb(160, 160, 160);
-                    font-size: 20px;
-                }
-                `}
+          .custom-input::placeholder {
+            color: rgb(160, 160, 160);
+            font-size: 20px;
+          }
+        `}
             </style>
         </Container>
     );

@@ -6,12 +6,14 @@ import { auth, db } from "./firebase-config";
 import { generateResponse } from "./handle-prompt";
 
 const ContinueChatInp = ({ chatId }: { chatId: string }) => {
-    const [aiChat, setAiChat] = useState<string>('');
-    const [message, setMessage] = useState<string>('');
-    const [chatTitle, setChatTitle] = useState<string>('');
+    const [message, setMessage] = useState<string>("");
+    const [aiChat, setAiChat] = useState<string>("");
+    const [chatTitle, setChatTitle] = useState<string>("");
     const userId = auth.currentUser?.uid;
 
     const handleMessage = async () => {
+        if (message.trim() === "") return; // Prevent sending if the input is empty
+
         try {
             if (!userId) {
                 console.error("User not authenticated.");
@@ -60,17 +62,27 @@ const ContinueChatInp = ({ chatId }: { chatId: string }) => {
             await updateDoc(userChatRef, {
                 [chatId]: [chatTitle, ...history, userMessage, aiMessage],
             });
+
             setMessage('');
         } catch (error) {
             console.error("Error in handleMessage:", error);
         }
     };
 
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === "Enter") {
+            handleMessage();
+        }
+    };
 
     return (
         <Container
             className="p-3 shadow position-absolute bottom-0 start-0 end-0 mb-3"
-            style={{ maxWidth: '800px', borderRadius: '50px', backgroundColor: 'rgb(31, 38, 66)' }}
+            style={{
+                maxWidth: "800px",
+                borderRadius: "50px",
+                backgroundColor: "rgb(31, 38, 66)",
+            }}
         >
             <Row>
                 <Col>
@@ -78,7 +90,7 @@ const ContinueChatInp = ({ chatId }: { chatId: string }) => {
                         <Button
                             variant="outline-secondary"
                             className="d-flex align-items-center"
-                            style={{ borderRadius: '50%', border: 'none', background: 'none' }}
+                            style={{ borderRadius: "50%", border: "none", background: "none" }}
                         >
                             <FaPaperclip size={30} />
                         </Button>
@@ -86,21 +98,22 @@ const ContinueChatInp = ({ chatId }: { chatId: string }) => {
                             type="text"
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
+                            onKeyDown={handleKeyDown} // Trigger message sending on Enter
                             className="custom-input"
                             placeholder="Send a message..."
                             style={{
-                                borderRadius: '15px',
-                                background: 'none',
-                                border: 'none',
-                                outline: 'none',
-                                color: 'rgb(160, 160, 160)',
+                                borderRadius: "15px",
+                                background: "none",
+                                border: "none",
+                                outline: "none",
+                                color: "rgb(160, 160, 160)",
                             }}
                         />
                         <Button
                             onClick={handleMessage}
                             variant="primary"
                             className="d-flex align-items-center"
-                            style={{ borderRadius: '50%', border: 'none', background: 'none' }}
+                            style={{ borderRadius: "50%", border: "none", background: "none" }}
                         >
                             <FaPaperPlane size={30} color="rgb(160, 160, 160)" />
                         </Button>
@@ -109,11 +122,11 @@ const ContinueChatInp = ({ chatId }: { chatId: string }) => {
             </Row>
             <style>
                 {`
-                .custom-input::placeholder {
-                    color: rgb(160, 160, 160);
-                    font-size: 20px;
-                }
-                `}
+          .custom-input::placeholder {
+            color: rgb(160, 160, 160);
+            font-size: 20px;
+          }
+        `}
             </style>
         </Container>
     );

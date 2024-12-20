@@ -1,4 +1,5 @@
 import { onAuthStateChanged } from "firebase/auth";
+import "highlight.js/styles/github.css";
 import { useState } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import ChatPage from "./components/ChatPage";

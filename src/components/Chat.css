@@ -3,10 +3,19 @@
     height: 80%;
     overflow: auto;
     scrollbar-width: none;
+    transition: margin-left 0.3s ease-in-out;
 }
 
-.ai-response {
-    width: 100%;
+.ai-response pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    overflow-x: auto;
+    font-family: Courier New, Courier, monospace;
+    background-color: rgb(30, 35, 37);
+    padding: .8rem;
+    border-radius: .8rem;
+    margin: .4rem 0;
 }
 
 .human-response {
@@ -20,4 +29,11 @@
     background: none;
     outline: none;
     color: rgb(160, 160, 160);
+}
+
+@media (max-width: 725px) {
+    .chat-container {
+        margin-left: 0;
+        /* Reset margin for mobile view */
+    }
 }

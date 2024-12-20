@@ -5,6 +5,16 @@
     background-color: #0a0f23;
     border-right-color: rgb(160, 160, 160);
     border-right: 1px solid;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+}
+
+.side-bar.visible {
+    transform: translateX(0);
 }
 
 .title-container {
@@ -26,4 +36,22 @@
 
 .option-btn {
     background: none;
+}
+
+@media (max-width: 725px) {
+    .side-bar {
+        width: 100%;
+        /* Fullscreen sidebar on mobile */
+        transform: translateX(-100%);
+    }
+
+    .side-bar.visible {
+        transform: translateX(0);
+        /* Slide in on toggle */
+    }
+
+    .chat-container {
+        padding: 1rem;
+        /* Ensure consistent padding for mobile */
+    }
 }

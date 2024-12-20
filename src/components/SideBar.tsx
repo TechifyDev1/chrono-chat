@@ -19,7 +19,7 @@ interface ChildProps {
 
 const SideBar: React.FC<ChildProps> = ({ onButtonClick, navState }) => {
     const [titles, setTitles] = useState<Chat[]>([]);
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     useEffect(() => {
         const userId = auth.currentUser?.uid;
@@ -27,7 +27,6 @@ const SideBar: React.FC<ChildProps> = ({ onButtonClick, navState }) => {
 
         const chatRef = doc(db, "userchats", userId);
 
-        // Real-time listener with onSnapshot
         const unsubscribe = onSnapshot(chatRef, (docSnap) => {
             if (docSnap.exists()) {
                 const data = docSnap.data();
@@ -48,9 +47,12 @@ const SideBar: React.FC<ChildProps> = ({ onButtonClick, navState }) => {
 
         return () => unsubscribe();
     }, []);
+
     const handleNewChat = () => {
+        onButtonClick();
         navigate('/');
-    }
+    };
+
     const refreshTitles = () => {
         const userId = auth.currentUser?.uid;
         if (!userId) return;
@@ -61,9 +63,8 @@ const SideBar: React.FC<ChildProps> = ({ onButtonClick, navState }) => {
             if (docSnap.exists()) {
                 const data = docSnap.data();
 
-                // Map and filter out null chats
                 const chatTitles = Object.entries(data)
-                    .filter(([_, value]) => value !== null) // Exclude null values
+                    .filter(([_, value]) => value !== null)
                     .map(([id, value]) => {
                         const title = Array.isArray(value) ? value[0] : "Untitled Chat";
                         return { id, title };
@@ -77,13 +78,19 @@ const SideBar: React.FC<ChildProps> = ({ onButtonClick, navState }) => {
     };
 
     return (
-        <nav className="side-bar position-fixed left-0 top-0 d-flex flex-column px-3" style={{ transform: navState ? 'translateX(0)' : 'translateX(-100)' }}>
+        <nav className={`side-bar ${navState ? "visible" : ""}`}>
             <div className="d-flex justify-content-between align-items-center p-2 mb-4">
                 <button className="close-side-bar" onClick={onButtonClick}>
-                    <AiOutlineClose style={{ color: "rgb(160, 160, 160)" }} />
+                    <AiOutlineClose
+                        className="d-flex justify-content-center align-items-center"
+                        style={{ color: "rgb(160, 160, 160)" }}
+                    />
                 </button>
                 <h2 className="brand fw-normal text-white">Chrono</h2>
-                <button className="new-chat-icon" onClick={() => handleNewChat()}>
+                <button
+                    className="new-chat-icon d-flex justify-content-center align-items-center"
+                    onClick={() => handleNewChat()}
+                >
                     <FaPlus style={{ color: "rgb(160, 160, 160)" }} />
                 </button>
             </div>
@@ -94,6 +101,7 @@ const SideBar: React.FC<ChildProps> = ({ onButtonClick, navState }) => {
                         id={chat.id}
                         title={chat.title}
                         onDelete={refreshTitles}
+                        onClick={onButtonClick} // Pass the toggle function here
                     />
                 ))
             ) : (

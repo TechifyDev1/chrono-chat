@@ -50,25 +50,44 @@ const Conversation = () => {
     }, [userId, id, navigate]);
 
     if (!id || !userId) return <div>Loading...</div>;
+
     const handleToggleNav = () => {
-        setIsSideBarVisible(prevState => !prevState);
-    }
+        setIsSideBarVisible((prevState) => !prevState);
+    };
+
     return (
         <>
-            <SideBar onButtonClick={handleToggleNav} />
-            <div style={{ width: isSideBarVisible ? '75%' : '100%', height: '100vh', backgroundColor: "#0a0f23", color: "rgb(160, 160, 160)", position: 'fixed', right: '0' }}>
-                <NavBar />
+            {/* Sidebar */}
+            <SideBar onButtonClick={handleToggleNav} navState={isSideBarVisible} />
+
+            {/* Main Chat Area */}
+            <div
+                style={{
+                    width: isSideBarVisible && window.innerWidth > 725 ? "75%" : "100%",
+                    height: "100vh",
+                    backgroundColor: "#0a0f23",
+                    color: "rgb(160, 160, 160)",
+                    position: "fixed",
+                    right: "0",
+                    transition: "width 0.5s",
+                }}
+            >
+                <NavBar toggleSideBar={handleToggleNav} />
+
                 <div className="chat-container container p-3">
-                    {conv.map((message, index) => {
-                        return (
+                    {conv.length > 0 ? (
+                        conv.map((message, index) => (
                             <Chat
                                 key={index}
-                                aiRes={message.role === 'model' ? message.parts[0]?.text : ''}
-                                userRes={message.role === 'user' ? message.parts[0]?.text : ''}
+                                aiRes={message.role === "model" ? message.parts[0]?.text : ""}
+                                userRes={message.role === "user" ? message.parts[0]?.text : ""}
                             />
-                        );
-                    })}
+                        ))
+                    ) : (
+                        <p>No messages yet. Start chatting!</p>
+                    )}
                 </div>
+
                 <ContinueChatInp chatId={`${id}`} />
             </div>
         </>

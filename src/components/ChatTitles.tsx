@@ -9,11 +9,12 @@ interface ChatTitleProps {
     id: string;
     title: string;
     onDelete: () => void;
+    onClick: () => void; // New prop to handle sidebar toggle
 }
 
-const ChatTitle: React.FC<ChatTitleProps> = ({ id, title, onDelete }) => {
+const ChatTitle: React.FC<ChatTitleProps> = ({ id, title, onDelete, onClick }) => {
     const [showModal, setShowModal] = useState(false);
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     const handleDelete = async () => {
         try {
@@ -27,22 +28,27 @@ const ChatTitle: React.FC<ChatTitleProps> = ({ id, title, onDelete }) => {
             });
 
             onDelete();
-
             setShowModal(false);
         } catch (error) {
             console.error("Error deleting chat:", error);
         }
     };
+
     const navigateToChat = (id: string) => {
-        navigate(`/conversation/${id}`)
-    }
+        navigate(`/conversation/${id}`);
+        onClick(); // Close the sidebar after navigating
+    };
 
     return (
         <div
             className={`d-flex justify-content-between align-items-center p-3 shadow-lg title-container rounded mb-3 position-relative`}
             style={{ cursor: "pointer" }}
         >
-            <span className="title" style={{ padding: "none", margin: "none" }} onClick={() => { navigateToChat(id) }}>
+            <span
+                className="title"
+                style={{ padding: "none", margin: "none" }}
+                onClick={() => navigateToChat(id)}
+            >
                 {title}
             </span>
             <button

@@ -8,12 +8,26 @@ interface Message {
   parts: { text: string }[];
 }
 
+// Helper function to check for creator-related questions Chatgpt generate this one!!!
+const isCreatorQuestion = (input: string): boolean => {
+  const creatorKeywords = [
+    /who.*(created|built|made).*you/i,
+    /your.*(creator|builder|developer)/i,
+    /who.*(designed|developed).*you/i,
+    /who.*(invented|programmed).*you/i,
+    /who.*made.*you/i
+  ];
+  return creatorKeywords.some((regex) => regex.test(input));
+};
+
 export const generateResponse = async (message: string, conversation: Message[] = []) => {
   try {
-    // Include instruction in the user's current message
-    const formattedMessage = `${message}`;
+    // Check if the user is asking about the creator
+    if (isCreatorQuestion(message)) {
+      return "I was created by Abdulqudus, also known as TechifyDev or Alqudusy. He's an aspiring full-stack developer with a strong passion for backend development. Even though he's still honing his skills, he already thinks and works like a backend pro!";
+    }
 
-    // Ensure conversation starts with a user message
+    const formattedMessage = `${message}`;
     const updatedConversation = [...conversation];
 
     const chatSession = model.startChat({ history: updatedConversation });
