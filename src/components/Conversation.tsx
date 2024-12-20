@@ -14,40 +14,44 @@ const Conversation = () => {
     const [conv, setConv] = useState<any[]>([]); // To store chat history
     const [isSideBarVisible, setIsSideBarVisible] = useState(false);
 
-    useEffect(() => {
-        if (!id || !userId) {
+useEffect(() => {
+    if (!id || !userId) {
+        navigate('/');
+        return;
+    }
+
+    const chatRef = doc(db, "userchats", userId);
+
+    const unsubscribe = onSnapshot(chatRef, (docSnap) => {
+        if (!docSnap.exists()) {
+            console.error("User chat document does not exist.");
             navigate('/');
             return;
         }
 
-        const chatRef = doc(db, "userchats", userId);
+        const data = docSnap.data();
+        const currentChatMessages = data?.[id];
 
-        const unsubscribe = onSnapshot(chatRef, (docSnap) => {
-            if (!docSnap.exists()) {
-                console.error("User chat document does not exist.");
-                navigate('/');
-                return;
-            }
+        if (!currentChatMessages) {
+            console.error("Chat not found or no messages for this ID.");
+            navigate('/');
+            return;
+        }
 
-            const data = docSnap.data();
-            const currentChatMessages = data?.[id];
+        // Safely set the document title
+        if (currentChatMessages[0]) {
             document.title = currentChatMessages[0];
+        }
 
-            if (!currentChatMessages) {
-                console.error("Chat not found or no messages for this ID.");
-                navigate('/');
-                return;
-            }
+        // Remove the first item (the title) and keep the rest
+        const chatHistory = currentChatMessages.slice(1);
 
-            // Remove the first item (the title) and keep the rest
-            const chatHistory = currentChatMessages.slice(1);
+        // Update the chat history
+        setConv(chatHistory);
+    });
 
-            // Ensure the chat history alternates between user and AI (even number)
-            setConv(chatHistory);
-        });
-
-        return () => unsubscribe();
-    }, [userId, id, navigate]);
+    return () => unsubscribe();
+}, [userId, id, navigate]);
 
     if (!id || !userId) return <div>Loading...</div>;
 
