@@ -146,7 +146,7 @@ const SignUpComponent: React.FC = () => {
                         </Form.Group>
 
                         {/* Button with spinner */}
-                        <Button type="submit" style={styles.button} disabled={loading}>
+                        <Button type="submit" style={styles.button} disabled={loading} className="ml-3"}>
                             {loading ? <Spinner animation="border" variant="light" size="sm" /> : "Sign up"}
                         </Button>
 
