@@ -1,12 +1,14 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import React, { ChangeEvent, CSSProperties } from "react";
-import { Button, Card, Form } from "react-bootstrap";
+import React, { ChangeEvent, CSSProperties, useState } from "react";
+import { Button, Card, Form, Spinner } from "react-bootstrap";
 import { FcGoogle } from "react-icons/fc"; // Import Google Icon
 import { Link } from "react-router-dom";
 import { auth, db } from "./firebase-config";
 
 const SignUpComponent: React.FC = () => {
+    const [loading, setLoading] = useState<boolean>(false); // Track loading state
+
     const styles: { [key: string]: CSSProperties } = {
         container: {
             backgroundColor: "#0a0f23",
@@ -31,7 +33,10 @@ const SignUpComponent: React.FC = () => {
             border: "none",
             transition: "0.3s ease",
             marginTop: '1rem',
-            width: '90%'
+            width: '90%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
         },
         googleButton: {
             backgroundColor: "rgb(160, 160, 160)", // White background
@@ -69,10 +74,8 @@ const SignUpComponent: React.FC = () => {
             background: 'none',
             marginLeft: '2rem'
         },
-        fileInput: {
-            backgroundColor: 'rgb(160, 160, 160)'
-        }
     };
+
     const handleSignUp = async (e: ChangeEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.target);
@@ -80,6 +83,7 @@ const SignUpComponent: React.FC = () => {
         const email = formData.get("email") as string;
         const password = formData.get("password") as string;
 
+        setLoading(true); // Start loading spinner
         try {
             const { user } = await createUserWithEmailAndPassword(auth, email, password);
             const userId = user.uid;
@@ -87,21 +91,24 @@ const SignUpComponent: React.FC = () => {
                 userId,
                 name,
                 email
-            }
+            };
             const userRef = doc(db, 'users', userId);
             const userChatRef = doc(db, 'userchats', userId);
             await setDoc(userChatRef, {});
             await setDoc(userRef, userData);
-            console.log("Success in logging in")
+            console.log("User successfully signed up");
         } catch (error: any) {
-            console.log(error);
-            console.log(error.message);
+            console.error(error.message);
+        } finally {
+            setLoading(false); // Stop loading spinner
         }
-    }
+    };
+
     return (
         <div style={styles.container}>
             <Card style={styles.card}>
-                <img src="/user.png" alt="" style={{ width: '50%', objectFit: 'cover' }} />
+                {/* Hide image in mobile view */}
+                <img src="/user.png" alt="" className="d-none d-md-block" style={{ width: '50%', objectFit: 'cover' }} />
                 <Card.Body style={{ width: '30%' }}>
                     <h2 style={styles.title}>SignUp to ChronoChat</h2>
                     <Form onSubmit={handleSignUp}>
@@ -135,12 +142,9 @@ const SignUpComponent: React.FC = () => {
                             />
                         </Form.Group>
 
-
-                        <Button
-                            type="submit"
-                            style={styles.button}
-                        >
-                            Sign up
+                        {/* Button with spinner */}
+                        <Button type="submit" style={styles.button} disabled={loading}>
+                            {loading ? <Spinner animation="border" variant="light" size="sm" /> : "Sign up"}
                         </Button>
 
                         <span style={{ display: 'inline-block', height: '1px', background: 'rgb(160, 160, 160)', width: '90%' }}></span>
@@ -151,7 +155,9 @@ const SignUpComponent: React.FC = () => {
                             Sign up with Google
                         </Button>
                     </Form>
-                    <div className="mt-3" style={{ color: 'rgb(160, 160, 160)' }}>Already have an account? <Link to='/signin' className='text-decoration-none text-white'>Sign in</Link></div>
+                    <div className="mt-3" style={{ color: 'rgb(160, 160, 160)' }}>
+                        Already have an account? <Link to='/signin' className='text-decoration-none text-white'>Sign in</Link>
+                    </div>
                 </Card.Body>
             </Card>
         </div>

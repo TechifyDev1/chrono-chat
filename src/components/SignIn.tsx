@@ -1,11 +1,13 @@
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { ChangeEvent, CSSProperties } from "react";
-import { Button, Card, Form } from "react-bootstrap";
+import { ChangeEvent, CSSProperties, useState } from "react";
+import { Button, Card, Form, Spinner } from "react-bootstrap";
 import { FcGoogle } from "react-icons/fc"; // Import Google Icon from React Icons
 import { Link } from "react-router-dom";
 import { auth } from "./firebase-config";
 
 const SignIn = () => {
+    const [loading, setLoading] = useState<boolean>(false); // Track loading state
+
     const styles: { [key: string]: CSSProperties } = {
         container: {
             backgroundColor: "#0a0f23",
@@ -30,7 +32,10 @@ const SignIn = () => {
             border: "none",
             transition: "0.3s ease",
             marginTop: '1rem',
-            width: '90%'
+            width: '90%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
         },
         googleButton: {
             backgroundColor: "rgb(160, 160, 160)", // White background
@@ -72,24 +77,31 @@ const SignIn = () => {
             backgroundColor: 'rgb(160, 160, 160)'
         }
     };
+
     const handleSignIn = async (e: ChangeEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.target);
-        const email = formData.get("email") as string
-        const password = formData.get("password") as string
+        const email = formData.get("email") as string;
+        const password = formData.get("password") as string;
+
+        setLoading(true); // Set loading to true when sign-in starts
         try {
             await signInWithEmailAndPassword(auth, email, password);
-            console.log('Log in successfull');
+            console.log('Log in successful');
         } catch (error: any) {
             console.log(error.code);
             console.log(error.message);
             console.log(error);
+        } finally {
+            setLoading(false); // Set loading to false after sign-in attempt
         }
-    }
+    };
+
     return (
         <div style={styles.container}>
             <Card style={styles.card}>
-                <img src="/logIn.png" alt="" style={{ width: '50%', objectFit: 'cover' }} />
+                {/* Image hidden on small screens */}
+                <img src="/logIn.png" alt="" className="d-none d-md-block" style={{ width: '50%', objectFit: 'cover' }} />
                 <Card.Body>
                     <h2 style={styles.title}>SignIn to ChronoChat</h2>
                     <Form onSubmit={handleSignIn}>
@@ -111,13 +123,20 @@ const SignIn = () => {
                                 type="password"
                             />
                         </Form.Group>
+
+                        {/* Button with loading spinner */}
                         <Button
                             type="submit"
                             style={styles.button}
-                            className=""
+                            disabled={loading} // Disable button while loading
                         >
-                            Sign In
+                            {loading ? (
+                                <Spinner animation="border" variant="light" size="sm" />
+                            ) : (
+                                "Sign In"
+                            )}
                         </Button>
+
                         <Button style={styles.googleButton} className="mt-3">
                             <FcGoogle size={20} className="me-2" />
                             Sign in with Google

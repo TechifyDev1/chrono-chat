@@ -1,5 +1,6 @@
 import { doc, onSnapshot } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
+import { Spinner } from 'react-bootstrap'; // Import Spinner from React-Bootstrap
 import { AiOutlineClose } from "react-icons/ai";
 import { FaPlus } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -19,6 +20,7 @@ interface ChildProps {
 
 const SideBar: React.FC<ChildProps> = ({ onButtonClick, navState }) => {
     const [titles, setTitles] = useState<Chat[]>([]);
+    const [loading, setLoading] = useState<boolean>(true); // Track loading state
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -28,6 +30,7 @@ const SideBar: React.FC<ChildProps> = ({ onButtonClick, navState }) => {
         const chatRef = doc(db, "userchats", userId);
 
         const unsubscribe = onSnapshot(chatRef, (docSnap) => {
+            setLoading(true); // Set loading to true when fetching
             if (docSnap.exists()) {
                 const data = docSnap.data();
 
@@ -43,6 +46,7 @@ const SideBar: React.FC<ChildProps> = ({ onButtonClick, navState }) => {
                 console.log("No chat titles found.");
                 setTitles([]);
             }
+            setLoading(false); // Set loading to false once the data is fetched
         });
 
         return () => unsubscribe();
@@ -60,6 +64,7 @@ const SideBar: React.FC<ChildProps> = ({ onButtonClick, navState }) => {
         const chatRef = doc(db, "userchats", userId);
 
         onSnapshot(chatRef, (docSnap) => {
+            setLoading(true); // Set loading to true when fetching
             if (docSnap.exists()) {
                 const data = docSnap.data();
 
@@ -74,6 +79,7 @@ const SideBar: React.FC<ChildProps> = ({ onButtonClick, navState }) => {
             } else {
                 setTitles([]);
             }
+            setLoading(false); // Set loading to false once the data is fetched
         });
     };
 
@@ -94,18 +100,27 @@ const SideBar: React.FC<ChildProps> = ({ onButtonClick, navState }) => {
                     <FaPlus style={{ color: "rgb(160, 160, 160)" }} />
                 </button>
             </div>
-            {titles.length > 0 ? (
-                titles.map((chat) => (
-                    <ChatTitle
-                        key={chat.id}
-                        id={chat.id}
-                        title={chat.title}
-                        onDelete={refreshTitles}
-                        onClick={onButtonClick} // Pass the toggle function here
-                    />
-                ))
+
+            {loading ? (
+                <div className="d-flex justify-content-center align-items-center">
+                    <Spinner animation="border" variant="light" />
+                </div>
             ) : (
-                <p className="text-white">No chats available.</p>
+                <>
+                    {titles.length > 0 ? (
+                        titles.map((chat) => (
+                            <ChatTitle
+                                key={chat.id}
+                                id={chat.id}
+                                title={chat.title}
+                                onDelete={refreshTitles}
+                                onClick={onButtonClick} // Pass the toggle function here
+                            />
+                        ))
+                    ) : (
+                        <p className="text-white">No chats available.</p>
+                    )}
+                </>
             )}
         </nav>
     );
