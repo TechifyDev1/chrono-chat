@@ -53,7 +53,7 @@ const MessageInput = () => {
 
     return (
         <Container
-            className="p-3 shadow position-absolute bottom-0 start-0 end-0 mb-3"
+            className="p-2 shadow position-fixed bottom-1 start-0 end-0 mb-3 m-auto"
             style={{
                 maxWidth: "800px",
                 borderRadius: "50px",
@@ -68,7 +68,7 @@ const MessageInput = () => {
                             className="d-flex align-items-center"
                             style={{ borderRadius: "50%", border: "none", background: "none" }}
                         >
-                            <FaPaperclip size={30} />
+                            <FaPaperclip size={20} />
                         </Button>
                         <Form.Control
                             type="text"
@@ -91,7 +91,7 @@ const MessageInput = () => {
                             className="d-flex align-items-center"
                             style={{ borderRadius: "50%", border: "none", background: "none" }}
                         >
-                            <FaPaperPlane size={30} color="rgb(160, 160, 160)" />
+                            <FaPaperPlane size={20} color="rgb(160, 160, 160)" />
                         </Button>
                     </InputGroup>
                 </Col>
