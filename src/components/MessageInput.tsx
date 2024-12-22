@@ -53,7 +53,7 @@ const MessageInput = () => {
 
     return (
         <Container
-            className="p-2 shadow position-fixed bottom-1 start-0 end-0 mb-3 m-auto"
+            className="p-2 shadow position-fixed fixed-bottom mb-3 end-0 bottom-3"
             style={{
                 maxWidth: "800px",
                 borderRadius: "50px",
