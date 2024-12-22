@@ -7,6 +7,10 @@
     overflow-x: hidden;
 }
 
+.ai-response * {
+    font-size: 25px;
+}
+
 .ai-response pre {
     white-space: pre-wrap;
     word-break: break-word;
