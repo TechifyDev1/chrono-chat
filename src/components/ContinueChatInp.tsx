@@ -72,11 +72,12 @@ const ContinueChatInp = ({ chatId }: { chatId: string }) => {
 
     return (
         <Container
-            className="p-2 shadow position-absolute fixed-bottom mb-5 end-0 bottom-5"
+            className="p-2 shadow position-absolute fixed-bottom end-0 bottom-5"
             style={{
                 maxWidth: "800px",
                 borderRadius: "50px",
                 backgroundColor: "rgb(31, 38, 66)",
+                marginBottom: "6rem"
             }}
         >
             <Row>
