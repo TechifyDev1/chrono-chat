@@ -34,7 +34,6 @@ export const generateResponse = async (message: string, conversation: Message[] 
     const result = await chatSession.sendMessage(formattedMessage);
 
     const responseText = result.response.text();
-    console.log(responseText);
 
     return responseText;
   } catch (e: any) {
@@ -47,7 +46,6 @@ export const generateTitle = async (message: string | undefined) => {
   try {
     const chatSession = model.startChat();
     const result = await chatSession.sendMessage(`give a short title not more than three words for this: ${message}`);
-    console.log(result.response.text());
     return result.response.text()
   } catch (e: any) {
     console.log(e);

@@ -53,11 +53,12 @@ const MessageInput = () => {
 
     return (
         <Container
-            className="p-2 shadow position-fixed fixed-bottom mb-3 end-0 bottom-3"
+            className="p-2 shadow position-absolute fixed-bottom end-0 bottom-5"
             style={{
                 maxWidth: "800px",
                 borderRadius: "50px",
                 backgroundColor: "rgb(31, 38, 66)",
+                marginBottom: "6rem"
             }}
         >
             <Row>

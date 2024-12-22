@@ -1,5 +1,5 @@
 import { doc, onSnapshot } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Chat from "./Chat";
 import ContinueChatInp from "./ContinueChatInp";
@@ -13,45 +13,51 @@ const Conversation = () => {
     const userId = auth.currentUser?.uid;
     const [conv, setConv] = useState<any[]>([]); // To store chat history
     const [isSideBarVisible, setIsSideBarVisible] = useState(false);
+    const ref = useRef<HTMLDivElement>(null);
 
-useEffect(() => {
-    if (!id || !userId) {
-        navigate('/');
-        return;
-    }
-
-    const chatRef = doc(db, "userchats", userId);
-
-    const unsubscribe = onSnapshot(chatRef, (docSnap) => {
-        if (!docSnap.exists()) {
-            console.error("User chat document does not exist.");
+    useEffect(() => {
+        if (!id || !userId) {
             navigate('/');
             return;
         }
 
-        const data = docSnap.data();
-        const currentChatMessages = data?.[id];
+        const chatRef = doc(db, "userchats", userId);
 
-        if (!currentChatMessages) {
-            console.error("Chat not found or no messages for this ID.");
-            navigate('/');
-            return;
-        }
+        const unsubscribe = onSnapshot(chatRef, (docSnap) => {
+            if (!docSnap.exists()) {
+                console.error("User chat document does not exist.");
+                navigate('/');
+                return;
+            }
 
-        // Safely set the document title
-        if (currentChatMessages[0]) {
-            document.title = currentChatMessages[0];
-        }
+            const data = docSnap.data();
+            const currentChatMessages = data?.[id];
 
-        // Remove the first item (the title) and keep the rest
-        const chatHistory = currentChatMessages.slice(1);
+            if (!currentChatMessages) {
+                console.error("Chat not found or no messages for this ID.");
+                navigate('/');
+                return;
+            }
 
-        // Update the chat history
-        setConv(chatHistory);
-    });
+            // Safely set the document title
+            if (currentChatMessages[0]) {
+                document.title = currentChatMessages[0];
+            }
 
-    return () => unsubscribe();
-}, [userId, id, navigate]);
+            // Remove the first item (the title) and keep the rest
+            const chatHistory = currentChatMessages.slice(1);
+
+            // Update the chat history
+            setConv(chatHistory);
+
+            if (ref.current) {
+                ref.current.scrollIntoView({
+                    behavior: 'smooth'
+                })
+            }
+        });
+        return () => unsubscribe();
+    }, [userId, id, navigate]);
 
     if (!id || !userId) return <div>Loading...</div>;
 
@@ -90,6 +96,7 @@ useEffect(() => {
                     ) : (
                         <p>No messages yet. Start chatting!</p>
                     )}
+                    <div ref={ref}></div>
                 </div>
 
                 <ContinueChatInp chatId={`${id}`} />
