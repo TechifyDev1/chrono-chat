@@ -24,7 +24,7 @@ const Chat: React.FC<ChatProps> = ({ aiRes, userRes }) => {
     return (
         <>
             {/* User Response */}
-            <div className={`w-100 ${userRes === '' ? 'd-none' : 'd-flex'} flex-column align-items-end my-4`}>
+            <div className={`w-100 ${userRes === '' ? 'd-none' : 'd-flex'} flex-column align-items-end`}>
                 <div className="human-response rounded-5 p-3">
                     {userRes}
                 </div>
