@@ -15,7 +15,6 @@ export const markDownToHtml = (markdown: string) => {
                     console.error(err);
                 }
             }
-
             // Use auto-highlighting if no language is specified
             try {
                 return hljs.highlightAuto(str).value;
