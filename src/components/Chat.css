@@ -4,6 +4,7 @@
     overflow: auto;
     scrollbar-width: none;
     transition: margin-left 0.3s ease-in-out;
+    overflow-x: hidden;
 }
 
 .ai-response pre {
