@@ -36,7 +36,8 @@ const SignUpComponent: React.FC = () => {
             width: '90%',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            margin: 'auto',
         },
         googleButton: {
             backgroundColor: "rgb(160, 160, 160)", // White background

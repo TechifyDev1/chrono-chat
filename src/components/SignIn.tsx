@@ -1,12 +1,12 @@
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { ChangeEvent, CSSProperties, useState } from "react";
 import { Button, Card, Form, Spinner } from "react-bootstrap";
-import { FcGoogle } from "react-icons/fc"; // Import Google Icon from React Icons
+import { FcGoogle } from "react-icons/fc";
 import { Link } from "react-router-dom";
 import { auth } from "./firebase-config";
 
 const SignIn = () => {
-    const [loading, setLoading] = useState<boolean>(false); // Track loading state
+    const [loading, setLoading] = useState<boolean>(false);
 
     const styles: { [key: string]: CSSProperties } = {
         container: {
@@ -36,6 +36,7 @@ const SignIn = () => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
+            margin: 'auto',
         },
         googleButton: {
             backgroundColor: "rgb(160, 160, 160)", // White background
@@ -84,7 +85,7 @@ const SignIn = () => {
         const email = formData.get("email") as string;
         const password = formData.get("password") as string;
 
-        setLoading(true); // Set loading to true when sign-in starts
+        setLoading(true);
         try {
             await signInWithEmailAndPassword(auth, email, password);
             console.log('Log in successful');
@@ -93,14 +94,13 @@ const SignIn = () => {
             console.log(error.message);
             console.log(error);
         } finally {
-            setLoading(false); // Set loading to false after sign-in attempt
+            setLoading(false);
         }
     };
 
     return (
         <div style={styles.container}>
             <Card style={styles.card}>
-                {/* Image hidden on small screens */}
                 <img src="/logIn.png" alt="" className="d-none d-md-block" style={{ width: '50%', objectFit: 'cover' }} />
                 <Card.Body>
                     <h2 style={styles.title}>SignIn to ChronoChat</h2>
@@ -124,11 +124,10 @@ const SignIn = () => {
                             />
                         </Form.Group>
 
-                        {/* Button with loading spinner */}
                         <Button
                             type="submit"
                             style={styles.button}
-                            disabled={loading} // Disable button while loading
+                            disabled={loading}
                         >
                             {loading ? (
                                 <Spinner animation="border" variant="light" size="sm" />
