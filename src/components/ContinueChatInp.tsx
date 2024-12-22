@@ -7,8 +7,6 @@ import { generateResponse } from "./handle-prompt";
 
 const ContinueChatInp = ({ chatId }: { chatId: string }) => {
     const [message, setMessage] = useState<string>("");
-    const [aiChat, setAiChat] = useState<string>("");
-    const [chatTitle, setChatTitle] = useState<string>("");
     const userId = auth.currentUser?.uid;
 
     const handleMessage = async () => {
@@ -30,7 +28,6 @@ const ContinueChatInp = ({ chatId }: { chatId: string }) => {
             }
 
             const chatTitle = currentChat[0];
-            setChatTitle(chatTitle);
             const history = currentChat.slice(1);
 
             document.title = chatTitle;
@@ -45,8 +42,6 @@ const ContinueChatInp = ({ chatId }: { chatId: string }) => {
                 console.error("Failed to generate AI response.");
                 return;
             }
-
-            setAiChat(aiRes);
 
             const userMessage = {
                 role: "user",

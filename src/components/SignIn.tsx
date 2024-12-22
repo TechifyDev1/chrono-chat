@@ -112,6 +112,7 @@ const SignIn = () => {
                                 placeholder="Enter your email"
                                 type="email"
                                 style={styles.input}
+                                required
                             />
                         </Form.Group>
                         <Form.Group>
@@ -121,6 +122,7 @@ const SignIn = () => {
                                 style={styles.input}
                                 placeholder="Enter your password"
                                 type="password"
+                                required
                             />
                         </Form.Group>
 
