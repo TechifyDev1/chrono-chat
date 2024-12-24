@@ -6,6 +6,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import ChatPage from "./components/ChatPage";
 import Conversation from "./components/Conversation";
 import { auth } from "./components/firebase-config";
+import Notification from "./components/Notification";
 import Settings from "./components/Settings";
 import SignIn from "./components/SignIn";
 import SignUp from "./components/Signup";
@@ -44,6 +45,7 @@ const App = () => {
 
   return (
     <BrowserRouter>
+      <Notification />
       <Routes>
         <Route path="/" element={userLoggedIn ? <ChatPage /> : <SignUp />} />
         <Route path="/signup" element={userLoggedIn ? <Navigate to="/" /> : <SignUp />} />

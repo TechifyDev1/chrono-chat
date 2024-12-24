@@ -4,6 +4,7 @@ import React, { ChangeEvent, CSSProperties, useState } from "react";
 import { Button, Card, Form, Spinner } from "react-bootstrap";
 import { FcGoogle } from "react-icons/fc"; // Import Google Icon
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import { auth, db } from "./firebase-config";
 
 const SignUpComponent: React.FC = () => {
@@ -98,8 +99,10 @@ const SignUpComponent: React.FC = () => {
             await setDoc(userChatRef, {});
             await setDoc(userRef, userData);
             console.log("User successfully signed up");
+            toast.success("Signed up successfully");
         } catch (error: any) {
             console.error(error.message);
+            toast.error("Error signing up");
         } finally {
             setLoading(false); // Stop loading spinner
         }

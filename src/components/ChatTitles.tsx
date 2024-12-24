@@ -2,6 +2,7 @@ import { doc, updateDoc } from "firebase/firestore";
 import { useState } from "react";
 import { FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import ConfirmDelete from "./ConfirmDelete";
 import { auth, db } from "./firebase-config";
 
@@ -29,8 +30,10 @@ const ChatTitle: React.FC<ChatTitleProps> = ({ id, title, onDelete, onClick }) =
 
             onDelete();
             setShowModal(false);
+            toast.success("Chat deleted successfully!");
         } catch (error) {
             console.error("Error deleting chat:", error);
+            toast.error("Error deleting chat");
         }
     };
 

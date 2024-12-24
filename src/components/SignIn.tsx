@@ -3,6 +3,7 @@ import { ChangeEvent, CSSProperties, useState } from "react";
 import { Button, Card, Form, Spinner } from "react-bootstrap";
 import { FcGoogle } from "react-icons/fc";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import { auth } from "./firebase-config";
 
 const SignIn = () => {
@@ -89,10 +90,12 @@ const SignIn = () => {
         try {
             await signInWithEmailAndPassword(auth, email, password);
             console.log('Log in successful');
+            toast.success('Log in successful');
         } catch (error: any) {
             console.log(error.code);
             console.log(error.message);
             console.log(error);
+            toast.error("error signing in");
         } finally {
             setLoading(false);
         }

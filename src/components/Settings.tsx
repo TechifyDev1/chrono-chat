@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { FaPencilAlt } from "react-icons/fa";
 import { MdPerson } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { auth, db } from "./firebase-config";
 import { updateSettings } from "./updateSettings";
 import { uploadImageToCloudinary } from "./uploadImage";
@@ -53,17 +54,21 @@ const Settings: React.FC = () => {
         event.preventDefault();
         if (selectedImage) {
             await updateSettings(formData.name, formData.email, formData.memory, selectedImage);
+            toast.success("Settings updated successfully!");
             navigate("/");
         } else {
-            alert("Please upload an image before updating settings.");
+            toast.error("Please upload an image");
         }
     }
 
     const handleLogout = () => {
         try {
             auth.signOut();
+            navigate("/login");
+            toast.success("Logged out successfully");
         } catch (error) {
             console.error("Error signing out:", error);
+            toast.error("Error signing out");
         }
     }
     return (
