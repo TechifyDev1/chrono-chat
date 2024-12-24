@@ -49,7 +49,7 @@ const App = () => {
         <Route path="/signup" element={userLoggedIn ? <Navigate to="/" /> : <SignUp />} />
         <Route path="/signin" element={userLoggedIn ? <Navigate to="/" /> : <SignIn />} />
         <Route path="/conversation/:id?" element={userLoggedIn ? <Conversation /> : <SignUp />} />
-        <Route path="/setting" element={userLoggedIn ? <Settings /> : <Navigate to="/signup" />} />
+        <Route path="/settings" element={userLoggedIn ? <Settings /> : <Navigate to="/signup" />} />
       </Routes>
     </BrowserRouter>
   );
