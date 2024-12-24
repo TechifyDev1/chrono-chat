@@ -34,7 +34,7 @@ const Conversation = () => {
             const currentChatMessages = data?.[id];
 
             if (!currentChatMessages) {
-                console.error("Chat not found or no messages for this ID.");
+                console.error("Chat not found.");
                 navigate('/');
                 return;
             }

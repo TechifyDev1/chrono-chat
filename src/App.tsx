@@ -6,12 +6,12 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import ChatPage from "./components/ChatPage";
 import Conversation from "./components/Conversation";
 import { auth } from "./components/firebase-config";
+import Settings from "./components/Settings";
 import SignIn from "./components/SignIn";
 import SignUp from "./components/Signup";
 
 const App = () => {
-  const [userLoggedIn, setIsUserLoggedIn] = useState<boolean | null>(null); // `null` for "loading" state
-
+  const [userLoggedIn, setIsUserLoggedIn] = useState<boolean | null>(null);
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setIsUserLoggedIn(!!user); // `true` if user is logged in, otherwise `false`
@@ -20,7 +20,6 @@ const App = () => {
   }, []);
 
   if (userLoggedIn === null) {
-    // Show loading spinner while checking authentication
     return (
       <div
         style={{
@@ -32,11 +31,11 @@ const App = () => {
         }}
       >
         <Spinner
-          animation="border"
+          animation="grow"
           style={{
             width: "3rem",
             height: "3rem",
-            color: "rgb(68, 56, 208)", // Ultraviolet Purple
+            color: "rgb(68, 56, 208)",
           }}
         />
       </div>
@@ -46,22 +45,11 @@ const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route
-          path="/"
-          element={userLoggedIn ? <ChatPage /> : <SignUp />}
-        ></Route>
-        <Route
-          path="/signup"
-          element={userLoggedIn ? <Navigate to="/" /> : <SignUp />}
-        ></Route>
-        <Route
-          path="/signin"
-          element={userLoggedIn ? <Navigate to="/" /> : <SignIn />}
-        ></Route>
-        <Route
-          path="/conversation/:id?"
-          element={userLoggedIn ? <Conversation /> : <SignUp />}
-        ></Route>
+        <Route path="/" element={userLoggedIn ? <ChatPage /> : <SignUp />} />
+        <Route path="/signup" element={userLoggedIn ? <Navigate to="/" /> : <SignUp />} />
+        <Route path="/signin" element={userLoggedIn ? <Navigate to="/" /> : <SignIn />} />
+        <Route path="/conversation/:id?" element={userLoggedIn ? <Conversation /> : <SignUp />} />
+        <Route path="/setting" element={userLoggedIn ? <Settings /> : <Navigate to="/signup" />} />
       </Routes>
     </BrowserRouter>
   );
