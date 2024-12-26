@@ -57,7 +57,7 @@ const Settings: React.FC = () => {
             toast.success("Settings updated successfully!");
             navigate("/");
         } else {
-            toast.error("Please upload an image");
+            toast.error("Please fill all fields");
         }
     }
 
