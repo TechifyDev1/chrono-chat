@@ -56,7 +56,8 @@ const SignIn = () => {
             padding: '0.5rem',
             borderColor: 'rgb(160, 160, 160)',
             width: '90%',
-            margin: 'auto'
+            margin: 'auto',
+            color: 'white',
         },
         title: {
             fontSize: "2rem",
