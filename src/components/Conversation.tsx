@@ -57,7 +57,7 @@ const Conversation = () => {
             }
         });
         return () => unsubscribe();
-    }, [userId, id, navigate, conv]);
+    }, [userId, id, navigate]);
 
     if (!id || !userId) return <div>Loading...</div>;
 
